@@ -11,4 +11,3 @@ app.use(express.json({limit:"10kb"}))
 
 
 export { app }
-export { app }
