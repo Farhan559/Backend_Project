@@ -6,3 +6,5 @@
             this.success = stausCode < 400
         }
     }
+
+    export {ApiResponse}
