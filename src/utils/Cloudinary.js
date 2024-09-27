@@ -1,41 +1,32 @@
-import {v2 as cloudinary} from 'cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs';
 
- // Configuration
- cloudinary.config({ 
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
-    api_key: process.env.CLOUDINARY_API_KEY, 
-    api_secret: process.env.CLOUDINARY_API_SECRET
+// Configuration
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const uploadOnCloundinary = async(loadFilePath)=>{
+const uploadOnCloundinary = async (loadFilePath) => {
     try {
-        if(!loadFilePath) return null
-        //upload the file on cloudinary.
-      const response = await cloudinary.uploader.upload(localFilePath,{
-            resource_type:"auto"
-        })
-        //file loaded successfully.
-        console.log("file is uploaded on cloudinary",response.url)
+        if (!loadFilePath) return null;
+
+        // Upload the file to Cloudinary
+        const response = await cloudinary.uploader.upload(loadFilePath, {
+            resource_type: "auto"
+        });
+
+        // File loaded successfully
+        console.log("File is uploaded on Cloudinary:", response.url);
         return response;
     } catch (error) {
-        fs.unlinkSync(localFilePath) // remove the locally saved temporary file as the upload operation failed.
+        console.error("Error uploading to Cloudinary:", error);
+        if (fs.existsSync(loadFilePath)) {
+            fs.unlinkSync(loadFilePath); // Remove the locally saved temporary file if the upload operation failed.
+        }
         return null;
     }
 }
 
-    export {uploadOnCloundinary}
-
-
-// Upload an image
-// const uploadResult = await cloudinary.uploader
-// .upload(
-//     'https://res.cloudinary.com/demo/image/upload/getting-started/shoes.jpg', {
-//         public_id: 'shoes',
-//     }
-// )
-// .catch((error) => {
-//     console.log(error);
-// });
-
-// console.log(uploadResult);
+export { uploadOnCloundinary };
