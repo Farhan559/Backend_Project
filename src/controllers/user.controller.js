@@ -75,14 +75,16 @@ const registerUser = asyncHandler(async(req,res)=>{
         throw new ApiError('500','something went wrong while creating a user')
     }
     return res.status(201).json(
-        new ApiResponse(200,createdUser,"User Registered Scuccessfully")
+        new ApiResponse(201,createdUser,"User Registered Scuccessfully")
     );
 });
     // Login
     const loginUser = asyncHandler(async(req,res)=>{
         const{email,username,password} = req.body;
 
-        if(!email || !username){
+        console.log(email); 
+
+        if(!email && !username){
             throw new ApiError(400,'username or password required')
         }
         const user = await User.findOne({
@@ -99,7 +101,7 @@ const registerUser = asyncHandler(async(req,res)=>{
         generateAccessAndRefreshTokens(user._id);
 
        const logggedInUser = await User.findById(user._id).
-       select("-password ,-refreshToken");
+       select("-password -refreshToken");
 
        const options = {
         httpOnly:true,
@@ -107,7 +109,7 @@ const registerUser = asyncHandler(async(req,res)=>{
        }
        return res.status(200)
        .cookie("accessToken",accessToken,options)
-       .cookie("refreshToke",refreshToken ,options)
+       .cookie("refreshToken",refreshToken ,options)
        .json(
         new ApiResponse(
             200,
