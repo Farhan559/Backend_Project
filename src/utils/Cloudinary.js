@@ -18,7 +18,8 @@ const uploadOnCloundinary = async (loadFilePath) => {
         });
 
         // File loaded successfully
-        console.log("File is uploaded on Cloudinary:", response.url);
+        // console.log("File is uploaded on Cloudinary:", response.url);
+        fs.unlinkSync(loadFilePath);
         return response;
     } catch (error) {
         console.error("Error uploading to Cloudinary:", error);
