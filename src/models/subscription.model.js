@@ -2,7 +2,7 @@ import { channel } from 'diagnostics_channel';
 import mognoose , {Schema} from 'mongoose';
 
 const subscriptionSchema = new Schema({
-    subcriber:{
+    subscriber:{
         type:Schema.Types.ObjectId, //one who scribering
         ref: "User"
     },
