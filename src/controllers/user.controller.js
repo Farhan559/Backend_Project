@@ -387,11 +387,44 @@ const registerUser = asyncHandler(async(req,res)=>{
         return res.status(200)
         .json(new ApiResponse(200,user[0].watchHistory,
             'Watch history fatched successfully'))
-    })
+    });
+
+    const publishVideos = asyncHandler(async(req,res)=>{
+        const {title,description} = req.body
+
+        if(!title || !description){
+            throw new ApiError(400,'title and description are required');
+        }
+        const videoFile = req.files?.vidoe[0]?.path;
+        if(!videoFile){
+            throw new ApiError(400,'video file is required');
+        }
+        // Upload video to Cloudinary (or any other storage service)
+        const uploadVideo = await uploadOnCloundinary(videoFile);
+        if(!uploadVideo || !uploadVideo.url){
+            throw new ApiError(500,'Error while uploading a video');
+        }
+        // Create a video record in the database
+        const video = await video.create({
+            title,
+            description,
+            videoUrl:uploadVideo.url,
+            owner:req.user._id,
+        });
+        if(!video){
+            throw new ApiError(500,'Failed to publish a video');
+        }
+        return res.status(201)
+        .json( new ApiResponse(201,video,'video publish successfully')
+    );
+
+    });
+
+   
 
 
 
 export {registerUser , loginUser , logOutUser , 
        refreshAcessToken,changeCurrentPassword ,
        getCurrentUser , updateAccountDetails ,updateUserAvatar,
-       updateUserCoverImage , getUserProfile,getWatchHistory}
+       updateUserCoverImage , getUserProfile,getWatchHistory,publishVideos}
