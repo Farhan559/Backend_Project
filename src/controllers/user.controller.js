@@ -35,7 +35,7 @@ const registerUser = asyncHandler(async(req,res)=>{
     //return response
 
     const {fullname,username,email, password}= req.body
-        console.log("email:",email)
+        // console.log("email:",email)
     
         if(
             [fullname,username,email,password].some((field)=>
@@ -127,8 +127,8 @@ const registerUser = asyncHandler(async(req,res)=>{
     const logOutUser = asyncHandler(async(req,res)=>{
        await User.findByIdAndUpdate(
             req.user._id,{
-                $set:{
-                    refreshToken:undefined
+                $unset:{
+                    refreshToken:1 // this removes the filed from document. 
                 }
             },{
                 new:true
